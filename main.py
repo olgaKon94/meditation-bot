@@ -156,10 +156,31 @@ async def обработка(update: Update, context: ContextTypes.DEFAULT_TYPE)
         reply_markup=главное_меню()
     )
 
+async def утренняя_рассылка(context):
+    фраза = random.choice(СЛОВА_ПОДДЕРЖКИ)
+    await context.bot.send_message(
+        chat_id="@2mantrywithlove",
+        text=f"🌅 *Доброе утро!*\n\n{фраза}\n\n_Начните день с минуты тишины_ 🧘",
+        parse_mode="Markdown"
+    )
+
+async def вечерняя_рассылка(context):
+    await context.bot.send_message(
+        chat_id="@2mantrywithlove",
+        text=МЕДИТАЦИИ["🌙 Тихий вечер"],
+        parse_mode="Markdown"
+    )
+
 if __name__ == "__main__":
+    import datetime
     TOKEN = os.getenv("TOKEN")
     app = ApplicationBuilder().token(TOKEN).build()
+
+    job_queue = app.job_queue
+    job_queue.run_daily(утренняя_рассылка, time=datetime.time(6, 0, 0))
+    job_queue.run_daily(вечерняя_рассылка, time=datetime.time(19, 0, 0))
+
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, обработка))
-    print("✅ Бот запущен! Нажмите Ctrl+C чтобы остановить.")
+    print("✅ Бот запущен с автопостингом!")
     app.run_polling()
