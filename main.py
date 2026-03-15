@@ -156,6 +156,13 @@ async def обработка(update: Update, context: ContextTypes.DEFAULT_TYPE)
         reply_markup=главное_меню()
     )
 
+async def тест(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await context.bot.send_message(
+        chat_id="@2mantrywithlove",
+        text="🧪 Тест автопостинга работает! 🎉"
+    )
+    await update.message.reply_text("Сообщение отправлено в канал!")
+
 async def утренняя_рассылка(context):
     фраза = random.choice(СЛОВА_ПОДДЕРЖКИ)
     await context.bot.send_message(
@@ -181,6 +188,7 @@ if __name__ == "__main__":
     job_queue.run_daily(вечерняя_рассылка, time=datetime.time(19, 0, 0))
 
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("тест", тест))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, обработка))
     print("✅ Бот запущен с автопостингом!")
     app.run_polling()
