@@ -4,7 +4,7 @@ import os
 import random
 from dotenv import load_dotenv
 load_dotenv()
-СЛОВА ПОДДЕРЖКИ = [
+СЛОВА_ПОДДЕРЖКИ = [
     "🌸 Спокойствие уже есть внутри тебя, миру не обязательно быть идеальным, чтобы тебе дышалось легче.",
     "✨ Прямо сейчас достаточно просто быть, не исправлять всё и всех — этого уже много для твоей души.",
     "🌿 Ты имеешь право остановиться, вдохнуть глубже и никуда не спешить, даже если мир торопит.",
@@ -17,7 +17,7 @@ load_dotenv()
     "🕊️ Жизнь не всегда тиха, но у тебя всегда есть выбор говорить с собой мягко, а не жестко.",
 ]
 
-МУЗЫКА ДЛЯ ДУШИ = [
+МУЗЫКА_ДЛЯ_ДУШИ = [
     ("🌊 Звуки океана", "https://youtu.be/kQP3iQzVMGY?is=Bst6mRZkOHzR1zMl"),
     ("🌧️ Звуки дождя", "https://youtu.be/Zhq_ThHG2gA?is=Tpgc_inKriyI-JxT"),
     ("🎵 Тибетские поющие чаши", "https://youtu.be/-RZNFiQlzGs?is=Jg_PRcNDjfsiicKt"),
@@ -126,13 +126,16 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def обработка(update: Update, context: ContextTypes.DEFAULT_TYPE):
     текст = update.message.text
 
-    if текст == "💬Слова поддержки":
-        Слова поддержки = random.choice(СЛОВА ПОДДЕРЖКИ)
-        await update.message.reply_text(Слова поддержки, reply_markup=главное_меню())
+    if текст == "💬 Слова поддержки":
+        фраза = random.choice(СЛОВА_ПОДДЕРЖКИ)
+        await update.message.reply_text(
+            фраза,
+            reply_markup=главное_меню()
+        )
         return
 
     if текст == "🎵 Музыка для души":
-        название, ссылка = random.choice(МУЗЫКА ДЛЯ ДУШИ)
+        название, ссылка = random.choice(МУЗЫКА_ДЛЯ_ДУШИ)
         await update.message.reply_text(
             f"🎵 {название}\n\nНажмите чтобы слушать:\n{ссылка}\n\nВключите и начните медитацию 🧘",
             reply_markup=главное_меню()
@@ -145,11 +148,13 @@ async def обработка(update: Update, context: ContextTypes.DEFAULT_TYPE)
             parse_mode="Markdown",
             reply_markup=главное_меню()
         )
-    else:
-        await update.message.reply_text(
-            "Выберите практику из меню 👇",
-            reply_markup=главное_меню()
-        )
+        return
+
+    # если ничего не подошло
+    await update.message.reply_text(
+        "Выберите практику из меню 👇",
+        reply_markup=главное_меню()
+    )
 
 if __name__ == "__main__":
     TOKEN = os.getenv("TOKEN")
