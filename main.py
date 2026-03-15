@@ -178,6 +178,19 @@ async def вечерняя_рассылка(context):
         parse_mode="Markdown"
     )
 
+async def опубликовать(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not context.args:
+        await update.message.reply_text(
+            "📝 Напишите текст поста после команды:\n\n/post Ваш текст здесь"
+        )
+        return
+    текст = " ".join(context.args)
+    await context.bot.send_message(
+        chat_id="@mantrywithlove",
+        text=текст
+    )
+    await update.message.reply_text("✅ Пост опубликован на канале!")
+
 if __name__ == "__main__":
     import datetime
     TOKEN = os.getenv("TOKEN")
@@ -188,7 +201,8 @@ if __name__ == "__main__":
     job_queue.run_daily(вечерняя_рассылка, time=datetime.time(19, 0, 0))
 
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("тест", тест))
+    app.add_handler(CommandHandler("post", опубликовать))
+    app.add_handler(CommandHandler("test", тест))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, обработка))
     print("✅ Бот запущен с автопостингом!")
     app.run_polling()
